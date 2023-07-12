@@ -1,18 +1,5 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { submit } from '../../../api/submit';
-
-const INITAL_DATA = {
-  privacyPolicyAgreement: '',
-  optionalPrivacyPolicyAgreement: '',
-  privacyPolicyDate: '23-05-05',
-  optionalPrivacyPolicyDate: '23-05-05',
-  policyHandlingDate: '23-05-05',
-  termsOfUseDate: '23-05-05',
-  ageFourteenCheckDate: '23-01-01',
-  policyHandlingAgreement: '',
-  termsOfUseAgreement: '',
-  ageFourteenCheck: '',
-};
+import { submit } from '../../../api';
 
 export const Terms = () => {
   const checkboxes = useMemo(() => {
