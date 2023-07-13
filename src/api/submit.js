@@ -17,9 +17,7 @@ export const submit = async (data, step) => {
 
     if (response.ok) {
       const {
-        data: {
-          data: { application },
-        },
+        data: { application },
       } = await response.json();
 
       console.log(application);

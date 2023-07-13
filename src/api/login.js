@@ -30,3 +30,26 @@ export const login = async (walletAddress, signature) => {
     return false;
   }
 };
+
+// export const refreshAccessToken = async () => {
+//   const recoilPersist = JSON.parse(
+//     localStorage.getItem('recoil-persist') || '{}'
+//   );
+
+//   const token = JSON.parse(localStorage.getItem('wxyz-token') || '{}');
+
+//   try {
+//     const res: { accessToken: string } = await AxiosClient.post('/refresh', {
+//       walletAddress: recoilPersist.walletAddressAtom,
+//       refreshToken: token.refreshToken,
+//     });
+//     localStorage.setItem(
+//       'wxyz-token',
+//       JSON.stringify({ ...token, accessToken: res.accessToken })
+//     );
+//     return res.accessToken;
+//   } catch (error) {
+//     logout();
+//     return '';
+//   }
+// };

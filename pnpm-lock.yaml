@@ -10,6 +10,7 @@ specifiers:
   react-dom: ^18.2.0
   react-scripts: 5.0.1
   recoil: ^0.7.7
+  recoil-persist: ^5.1.0
   web-vitals: ^2.1.4
 
 dependencies:
@@ -20,6 +21,7 @@ dependencies:
   react-dom: 18.2.0_react@18.2.0
   react-scripts: 5.0.1_react@18.2.0
   recoil: 0.7.7_biqbaboplfbrettd7655fr4n2y
+  recoil-persist: 5.1.0_recoil@0.7.7
   web-vitals: 2.1.4
 
 devDependencies:
@@ -8574,6 +8576,14 @@ packages:
     engines: {node: '>=8.10.0'}
     dependencies:
       picomatch: 2.3.1
+    dev: false
+
+  /recoil-persist/5.1.0_recoil@0.7.7:
+    resolution: {integrity: sha512-sew4k3uBVJjRWKCSFuBw07Y1p1pBOb0UxLJPxn4G2bX/9xNj+r2xlqYy/BRfyofR/ANfqBU04MIvulppU4ZC0w==}
+    peerDependencies:
+      recoil: ^0.7.2
+    dependencies:
+      recoil: 0.7.7_biqbaboplfbrettd7655fr4n2y
     dev: false
 
   /recoil/0.7.7_biqbaboplfbrettd7655fr4n2y:
