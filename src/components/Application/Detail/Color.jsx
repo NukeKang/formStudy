@@ -35,6 +35,7 @@ export const Color = () => {
         색깔
         {COLOR.map((_, index) => (
           <input
+            key={index}
             type='text'
             name='color'
             onChange={(e) => handleTextChange(e, index)}

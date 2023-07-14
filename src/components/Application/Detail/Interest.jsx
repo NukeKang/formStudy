@@ -16,32 +16,35 @@ const interests = [
 ];
 
 export const Interest = () => {
-  const [data, setApplicationData] = useRecoilState(applicationDataAtom);
-  const inputList = document
-    .querySelector('#interest')
-    ?.querySelectorAll('input');
-
-  console.log(inputList);
+  const [, setApplicationData] = useRecoilState(applicationDataAtom);
 
   const handleSelectChange = useCallback(
     (e) => {
       const { checked } = e.target;
-      const inputListToArray = Array.from(inputList).filter((input) => {
-        return input.checked;
-      });
 
-      console.log(inputListToArray);
-
-      setApplicationData((prev) => ({
-        ...prev,
-        detail: {
-          ...prev.detail,
-          interests: inputListToArray.map((input) => input.value),
-        },
-      }));
+      if (checked) {
+        setApplicationData((prev) => ({
+          ...prev,
+          detail: {
+            ...prev.detail,
+            interests: [...prev.detail.interests, e.target.value],
+          },
+        }));
+      } else {
+        setApplicationData((prev) => ({
+          ...prev,
+          detail: {
+            ...prev.detail,
+            interests: [
+              ...prev.detail.interests.filter(
+                (interest) => interest !== e.target.value
+              ),
+            ],
+          },
+        }));
+      }
     },
-
-    [inputList, setApplicationData]
+    [setApplicationData]
   );
 
   return (

@@ -23,6 +23,7 @@ export const InputFile = ({ arrayLength, page }) => {
 
       if (page === 'personal') {
         setApplicationData((prev) => {
+          console.log(prev);
           const newProfileImages = JSON.parse(
             JSON.stringify(prev.personal.profileImages)
           );
@@ -66,10 +67,13 @@ export const InputFile = ({ arrayLength, page }) => {
     if (!walletAddress) return;
 
     (async () => {
-      const data = await getApplicationData();
+      const { application } = await getApplicationData();
+      console.log(application);
+
+      if (application === null) return;
 
       const blobData = await Promise.all(
-        data.profileImages.map((item) => getImageUrl(item.imageUrl))
+        application.profileImages.map((item) => getImageUrl(item.imageUrl))
       );
 
       setBlob(blobData);

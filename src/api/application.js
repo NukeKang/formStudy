@@ -15,12 +15,9 @@ export const getApplicationData = async () => {
     });
 
     if (response.ok) {
-      const {
-        data: { application },
-      } = await response.json();
+      const { data } = await response.json();
 
-      console.log(application);
-      return application;
+      return data;
     } else {
       return null;
     }

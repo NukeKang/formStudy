@@ -1,13 +1,19 @@
 import React, { useCallback } from 'react';
 import { useRecoilState } from 'recoil';
-import { applicationDataAtom } from '../../../store/applicationState';
+import {
+  applicationDataAtom,
+  personalState,
+} from '../../../store/applicationState';
 
 export const InputText = ({ type, id, label, page }) => {
   const [data, setApplicationData] = useRecoilState(applicationDataAtom);
+
+  // const [personalData, setPersonalData] = useRecoilState(personalState);
+
+  // console.log(personalData);
   const handleTextChange = useCallback(
     (e) => {
       const { value } = e.target;
-      console.log(value);
 
       setApplicationData((prev) => ({
         ...prev,
@@ -20,7 +26,6 @@ export const InputText = ({ type, id, label, page }) => {
     [id, page, setApplicationData]
   );
 
-  console.log(data);
   return (
     <div>
       <label htmlFor={id}>{label}</label>

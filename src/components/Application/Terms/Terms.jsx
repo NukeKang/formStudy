@@ -1,7 +1,10 @@
 import React, { useCallback, useMemo, useState } from 'react';
 import { submit } from '../../../api';
+import { useSetRecoilState } from 'recoil';
+import { applicationViewAtom } from '../../../store/applicationState';
 
 export const Terms = () => {
+  const setApplicationView = useSetRecoilState(applicationViewAtom);
   const checkboxes = useMemo(() => {
     return [
       {
@@ -104,7 +107,9 @@ export const Terms = () => {
 
       const res = await submit(data, 'agreement');
 
-      console.log(res);
+      if (res) {
+        setApplicationView('PERSONAL');
+      }
     },
     [checkItems]
   );
