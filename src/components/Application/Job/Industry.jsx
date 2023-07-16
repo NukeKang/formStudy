@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
-import { useSetRecoilState } from 'recoil';
-import { applicationDataAtom } from '../../../store/applicationState';
+import { jobState } from '../../../store/applicationState';
+import { useRecoilState } from 'recoil';
 const INDUSTRY_LIST = [
   { id: 1, name: 'IT' },
   { id: 2, name: '금융' },
@@ -18,39 +18,38 @@ const SUB_INDUSTRY_LIST = [
 ];
 
 export const Industry = () => {
-  const setApplicationData = useSetRecoilState(applicationDataAtom);
+  const [jobData, setJobData] = useRecoilState(jobState);
   const onChangeIndustry = useCallback(
     (e) => {
       const { value } = e.target;
-      setApplicationData((prev) => ({
+
+      setJobData((prev) => ({
         ...prev,
-        job: {
-          ...prev.job,
-          companyIndustryCategory: value,
-        },
+        companyIndustryCategory: value,
       }));
     },
-    [setApplicationData]
+    [setJobData]
   );
 
   const onChangeSubIndustry = useCallback(
     (e) => {
       const { value } = e.target;
-      setApplicationData((prev) => ({
+      setJobData((prev) => ({
         ...prev,
-        job: {
-          ...prev.job,
-          companyIndustrySubcategory: value,
-        },
+        companyIndustrySubcategory: value,
       }));
     },
-    [setApplicationData]
+    [setJobData]
   );
 
   return (
     <div>
       <label htmlFor='companyIndustryCategory'>업계</label>
-      <select id='companyIndustryCategory' onChange={onChangeIndustry}>
+      <select
+        id='companyIndustryCategory'
+        onChange={onChangeIndustry}
+        value={jobData.companyIndustryCategory}
+      >
         {INDUSTRY_LIST.map((item) => {
           return (
             <option key={item.id} value={item.name}>
@@ -61,7 +60,11 @@ export const Industry = () => {
       </select>
 
       <label htmlFor='companyIndustrySubcategory'>업종</label>
-      <select id='companyIndustrySubcategory' onChange={onChangeSubIndustry}>
+      <select
+        id='companyIndustrySubcategory'
+        onChange={onChangeSubIndustry}
+        value={jobData.companyIndustrySubcategory}
+      >
         {SUB_INDUSTRY_LIST.map((item) => {
           return (
             <option key={item.id} value={item.name}>

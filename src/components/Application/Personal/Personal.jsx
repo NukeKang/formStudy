@@ -4,22 +4,28 @@ import { Country } from './Country';
 import { InputText } from '../Input/InputText';
 import { InputFile } from '../Input/InputFile';
 import { useRecoilValue } from 'recoil';
-import { applicationDataAtom } from '../../../store/applicationState';
+import {
+  applicationViewAtom,
+  personalState,
+} from '../../../store/applicationState';
 import { submit } from '../../../api';
+import { useSetRecoilState } from 'recoil';
 
 export const Personal = () => {
-  const applicationData = useRecoilValue(applicationDataAtom);
+  const personalData = useRecoilValue(personalState);
+  const setApplicationView = useSetRecoilState(applicationViewAtom);
 
   const onSubmit = useCallback(
     async (e) => {
       e.preventDefault();
-      const { personal } = applicationData;
 
-      const res = await submit(personal, 'basic');
+      const res = await submit(personalData, 'basic');
 
-      console.log(res);
+      if (res) {
+        setApplicationView('JOB');
+      }
     },
-    [applicationData]
+    [personalData, setApplicationView]
   );
 
   return (

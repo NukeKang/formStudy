@@ -1,6 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { useRecoilState } from 'recoil';
-import { applicationDataAtom } from '../../../store/applicationState';
+import {
+  applicationDataAtom,
+  detailState,
+} from '../../../store/applicationState';
 
 const interests = [
   '예술',
@@ -16,36 +19,44 @@ const interests = [
 ];
 
 export const Interest = () => {
-  const [, setApplicationData] = useRecoilState(applicationDataAtom);
+  const [detailData, setDetailData] = useRecoilState(detailState);
+  const [inputListToArray, setInputListToArray] = useState([]);
+
+  // const inputListToArray = Array.from(inputList)?.filter((input) => {
+  //   return input.checked;
+  // });
+
+  // console.log(inputListToArray);
 
   const handleSelectChange = useCallback(
     (e) => {
       const { checked } = e.target;
 
       if (checked) {
-        setApplicationData((prev) => ({
+        setDetailData((prev) => ({
           ...prev,
-          detail: {
-            ...prev.detail,
-            interests: [...prev.detail.interests, e.target.value],
-          },
+          interests: [...prev.interests, checked],
         }));
       } else {
-        setApplicationData((prev) => ({
+        setDetailData((prev) => ({
           ...prev,
-          detail: {
-            ...prev.detail,
-            interests: [
-              ...prev.detail.interests.filter(
-                (interest) => interest !== e.target.value
-              ),
-            ],
-          },
+          interests: prev.interests.filter(
+            (interest) => interest !== e.target.value
+          ),
         }));
       }
     },
-    [setApplicationData]
+    [setDetailData]
   );
+
+  useEffect(() => {
+    const inputList = document.querySelectorAll('#interest input');
+    const inputListToArray = Array.from(inputList)?.filter((input) => {
+      return input.checked;
+    });
+
+    setInputListToArray(inputListToArray);
+  }, [detailData.interests]);
 
   return (
     <div>
@@ -58,6 +69,7 @@ export const Interest = () => {
               id={interest}
               onChange={handleSelectChange}
               value={interest}
+              checked={detailData.interests.includes(interest)}
             />
             {interest}
           </label>

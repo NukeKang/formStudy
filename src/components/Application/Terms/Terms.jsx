@@ -34,7 +34,7 @@ export const Terms = () => {
       {
         id: 'check-box-5',
         label: '만 14세 이상 확인',
-        name: 'ageFourteenCheck',
+        name: 'ageCheck',
         value: false,
       },
     ];
@@ -64,28 +64,25 @@ export const Terms = () => {
     [checkboxes]
   );
 
-  const handleCheck = useCallback(
-    (e) => {
-      const { checked, id } = e.target;
+  const handleCheck = useCallback((e) => {
+    const { checked, id } = e.target;
 
-      if (checked) {
-        setCheckItems((prev) => {
-          const newCheckItems = [...prev];
-          newCheckItems[id] = true;
+    if (checked) {
+      setCheckItems((prev) => {
+        const newCheckItems = [...prev];
+        newCheckItems[id] = true;
 
-          return newCheckItems;
-        });
-      } else {
-        setCheckItems((prev) => {
-          const newCheckItems = [...prev];
-          newCheckItems[id] = false;
+        return newCheckItems;
+      });
+    } else {
+      setCheckItems((prev) => {
+        const newCheckItems = [...prev];
+        newCheckItems[id] = false;
 
-          return newCheckItems;
-        });
-      }
-    },
-    [checkItems]
-  );
+        return newCheckItems;
+      });
+    }
+  }, []);
 
   const onSubmit = useCallback(
     async (e) => {
@@ -100,8 +97,8 @@ export const Terms = () => {
         termsOfUseDate: '23-05-05',
         policyHandlingAgreement: checkItems[3] ? 'Y' : 'N',
         policyHandlingDate: '23-05-05',
-        ageFourteenCheck: checkItems[4] ? 'Y' : 'N',
-        ageFourteenCheckDate: '23-01-01',
+        ageCheck: checkItems[4] ? 'Y' : 'N',
+        ageCheckDate: '23-01-01',
       };
       console.log(data);
 
@@ -111,7 +108,7 @@ export const Terms = () => {
         setApplicationView('PERSONAL');
       }
     },
-    [checkItems]
+    [checkItems, setApplicationView]
   );
 
   return (

@@ -1,6 +1,7 @@
 import React, { useCallback } from 'react';
-import { useRecoilState } from 'recoil';
-import { applicationDataAtom } from '../../../store/applicationState';
+
+import { useSetRecoilState } from 'recoil';
+import { wholeDataAtom } from '../../../store/applicationState';
 const COUNTRY_LIST = [
   { id: 1, name: '대한민국' },
   { id: 2, name: '미국' },
@@ -10,19 +11,16 @@ const COUNTRY_LIST = [
 ];
 
 export const Country = () => {
-  const [, setApplicationData] = useRecoilState(applicationDataAtom);
+  const setWholeData = useSetRecoilState(wholeDataAtom);
   const onChangeCountry = useCallback(
     (e) => {
       const { value } = e.target;
-      setApplicationData((prev) => ({
+      setWholeData((prev) => ({
         ...prev,
-        personal: {
-          ...prev.personal,
-          nationality: value,
-        },
+        nationality: value,
       }));
     },
-    [setApplicationData]
+    [setWholeData]
   );
 
   return (

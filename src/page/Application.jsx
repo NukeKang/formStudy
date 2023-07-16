@@ -6,29 +6,22 @@ import { useRecoilValue } from 'recoil';
 import { walletAddressAtom } from '../store/walletState';
 import { getApplicationData } from '../api';
 import { Personal } from '../components/Application/Personal/Personal';
-import { useSetRecoilState } from 'recoil';
-import {
-  applicationDataAtom,
-  applicationViewAtom,
-  personalState,
-  temsState,
-} from '../store/applicationState';
+
+import { applicationViewAtom, wholeDataAtom } from '../store/applicationState';
 import { Job } from '../components/Application/Job';
 import { Detail } from '../components/Application/Detail';
 import { useRecoilState } from 'recoil';
+import { Preview } from '../components/Application/Preview/Preview';
 
 export const Application = () => {
   const walletAddress = useRecoilValue(walletAddressAtom);
-  const [applicationData, setApplicationData] =
-    useRecoilState(applicationDataAtom);
   const [applicationView, setApplicationView] =
     useRecoilState(applicationViewAtom);
-  const [personalData, setPersonalData] = useRecoilState(personalState);
-  const [termsData, setTermsData] = useRecoilState(temsState);
+  const [wholeData, setWholeData] = useRecoilState(wholeDataAtom);
 
   const setPage = useCallback(
     (data) => {
-      let temp = data || applicationData;
+      let temp = data;
       let saveStatus = 'TERMS';
 
       if (temp.saveStatus === 'AGREEMENT') {
@@ -43,7 +36,7 @@ export const Application = () => {
 
       setApplicationView(saveStatus);
     },
-    [applicationData, setApplicationView]
+    [setApplicationView]
   );
 
   const getInitialData = useCallback(async () => {
@@ -54,14 +47,13 @@ export const Application = () => {
         setApplicationView('TERMS');
       } else {
         setPage(res.application);
-        setPersonalData(res.application);
-        // setApplicationData({
-        //   walletAddress,
-        //   ...res.application,
-        // });
+        setWholeData((prev) => ({
+          ...prev,
+          ...res.application,
+        }));
       }
     }
-  }, [walletAddress]);
+  }, [setApplicationView, setPage, setWholeData]);
 
   useEffect(() => {
     if (!walletAddress) {
@@ -71,7 +63,7 @@ export const Application = () => {
     }
   }, [getInitialData, walletAddress]);
 
-  console.log(personalData);
+  console.log('전체데이터', wholeData);
 
   return (
     <>
@@ -81,6 +73,7 @@ export const Application = () => {
           {applicationView === 'PERSONAL' && <Personal />}
           {applicationView === 'JOB' && <Job />}
           {applicationView === 'DETAIL' && <Detail />}
+          {applicationView === 'PREVIEW' && <Preview />}
         </>
       ) : (
         <ConnectWallet />

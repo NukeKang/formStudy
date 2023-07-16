@@ -1,16 +1,19 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { getApplicationData, getImageUrl, imageUpload } from '../../../api';
+import { getImageUrl, imageUpload } from '../../../api';
 import { useRecoilValue } from 'recoil';
 import { walletAddressAtom } from '../../../store/walletState';
-import { useSetRecoilState } from 'recoil';
-import { applicationDataAtom } from '../../../store/applicationState';
+import { jobState, personalState } from '../../../store/applicationState';
 
 import './InputFile.css';
+import { useRecoilState } from 'recoil';
 
 export const InputFile = ({ arrayLength, page }) => {
   const walletAddress = useRecoilValue(walletAddressAtom);
-  const setApplicationData = useSetRecoilState(applicationDataAtom);
+
   const [blob, setBlob] = useState([null, null]);
+  const [jobBlob, setJobBlob] = useState(null);
+  const [personalData, setPersonalData] = useRecoilState(personalState);
+  const [jobData, setJobData] = useRecoilState(jobState);
 
   const onChangeFile = useCallback(
     async (e, index) => {
@@ -22,63 +25,76 @@ export const InputFile = ({ arrayLength, page }) => {
       const response = await imageUpload(formData, walletAddress, 'PROFILE');
 
       if (page === 'personal') {
-        setApplicationData((prev) => {
-          console.log(prev);
+        setPersonalData((prev) => {
           const newProfileImages = JSON.parse(
-            JSON.stringify(prev.personal.profileImages)
+            JSON.stringify(prev.profileImages)
           );
 
           newProfileImages[index].imageUrl = response.imageUrl;
 
           return {
             ...prev,
-            personal: {
-              ...prev.personal,
-              profileImages: newProfileImages,
-            },
+            profileImages: newProfileImages,
           };
         });
       } else if (page === 'job') {
-        setApplicationData((prev) => {
+        setJobData((prev) => {
           return {
             ...prev,
-            job: {
-              ...prev.job,
-              businessCardImageUrl: response.imageUrl,
-            },
+            businessCardImageUrl: response.imageUrl,
           };
         });
       }
 
-      const blobData = await getImageUrl(response.imageUrl);
-      setBlob((prev) => {
-        return prev.map((item, idx) => {
-          if (idx === index) {
-            return blobData;
-          }
-          return item;
+      if (response) {
+        const blobData = await getImageUrl(response.imageUrl);
+        setBlob((prev) => {
+          return prev.map((item, idx) => {
+            if (idx === index) {
+              return blobData;
+            }
+            return item;
+          });
         });
-      });
+      }
     },
-    [walletAddress]
+    [page, setJobData, setPersonalData, walletAddress]
   );
 
   useEffect(() => {
     if (!walletAddress) return;
 
-    (async () => {
-      const { application } = await getApplicationData();
-      console.log(application);
+    if (
+      page === 'personal' &&
+      personalData.profileImages[0].imageUrl === '' &&
+      personalData.profileImages[1].imageUrl === ''
+    ) {
+      return;
+    } else {
+      (async () => {
+        const blobData = await Promise.all(
+          personalData.profileImages.map((item) => getImageUrl(item.imageUrl))
+        );
 
-      if (application === null) return;
+        setBlob(blobData);
+      })();
+    }
 
-      const blobData = await Promise.all(
-        application.profileImages.map((item) => getImageUrl(item.imageUrl))
-      );
+    if (page === 'job' && jobData.businessCardImageUrl === null) {
+      return;
+    } else {
+      (async () => {
+        const blobData = await getImageUrl(jobData.businessCardImageUrl);
 
-      setBlob(blobData);
-    })();
-  }, []);
+        setJobBlob(blobData);
+      })();
+    }
+  }, [
+    walletAddress,
+    page,
+    personalData.profileImages,
+    jobData.businessCardImageUrl,
+  ]);
 
   return (
     <div>
@@ -92,7 +108,10 @@ export const InputFile = ({ arrayLength, page }) => {
               onChange={(e) => onChangeFile(e, index)}
               accept='image/jpg, image/jpeg, image/png'
             />
-            <img src={blob[index]} alt='profile' />
+            <img
+              src={page === 'personal' ? blob[index] : jobBlob}
+              alt='profile'
+            />
           </div>
         );
       })}

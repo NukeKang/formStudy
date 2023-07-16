@@ -1,29 +1,39 @@
 import React, { useCallback } from 'react';
-import { useRecoilState } from 'recoil';
+
 import {
-  applicationDataAtom,
+  detailState,
+  jobState,
   personalState,
 } from '../../../store/applicationState';
+import { useRecoilState } from 'recoil';
 
 export const InputText = ({ type, id, label, page }) => {
-  const [data, setApplicationData] = useRecoilState(applicationDataAtom);
+  const [personalData, setPersonalData] = useRecoilState(personalState);
+  const [jobData, setJobData] = useRecoilState(jobState);
+  const [detailData, setDetailData] = useRecoilState(detailState);
 
-  // const [personalData, setPersonalData] = useRecoilState(personalState);
-
-  // console.log(personalData);
   const handleTextChange = useCallback(
     (e) => {
       const { value } = e.target;
 
-      setApplicationData((prev) => ({
-        ...prev,
-        [page]: {
-          ...prev[page],
+      if (page === 'personal') {
+        setPersonalData((prev) => ({
+          ...prev,
           [id]: value,
-        },
-      }));
+        }));
+      } else if (page === 'job') {
+        setJobData((prev) => ({
+          ...prev,
+          [id]: value,
+        }));
+      } else {
+        setDetailData((prev) => ({
+          ...prev,
+          [id]: value,
+        }));
+      }
     },
-    [id, page, setApplicationData]
+    [id, page, setDetailData, setJobData, setPersonalData]
   );
 
   return (
@@ -34,6 +44,13 @@ export const InputText = ({ type, id, label, page }) => {
         id={id}
         onChange={handleTextChange}
         autoComplete='off'
+        value={
+          page === 'personal'
+            ? personalData[id]
+            : page === 'job'
+            ? jobData[id]
+            : detailData[id]
+        }
       />
     </div>
   );

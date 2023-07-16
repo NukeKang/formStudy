@@ -1,6 +1,6 @@
 import React, { useCallback } from 'react';
 import { useRecoilState } from 'recoil';
-import { applicationDataAtom } from '../../../store/applicationState';
+import { detailState } from '../../../store/applicationState';
 
 const COLOR = [
   { id: 1, name: '' },
@@ -9,24 +9,20 @@ const COLOR = [
 ];
 
 export const Color = () => {
-  const [, setApplicationData] = useRecoilState(applicationDataAtom);
+  const [detailData, setDetailData] = useRecoilState(detailState);
+  console.log(detailData);
   const handleTextChange = useCallback(
     (e, index) => {
       const { value } = e.target;
 
-      setApplicationData((prev) => ({
+      setDetailData((prev) => ({
         ...prev,
-        detail: {
-          ...prev.detail,
-          favoriteColors: [
-            ...prev.detail.favoriteColors.slice(0, index),
-            { code: value },
-            ...prev.detail.favoriteColors.slice(index + 1),
-          ],
-        },
+        favoriteColors: prev.favoriteColors.map((color, i) =>
+          i === index ? { ...color, code: value } : color
+        ),
       }));
     },
-    [setApplicationData]
+    [setDetailData]
   );
 
   return (
@@ -38,6 +34,7 @@ export const Color = () => {
             key={index}
             type='text'
             name='color'
+            value={detailData.favoriteColors[index]?.code}
             onChange={(e) => handleTextChange(e, index)}
           />
         ))}

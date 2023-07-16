@@ -14,7 +14,7 @@ export const applicationDataAtom = atom({
       optionalPrivacyPolicyAgreement: '',
       policyHandlingAgreement: '',
       termsOfUseAgreement: '',
-      ageFourteenCheck: '',
+      ageCheck: '',
     },
     personal: {
       name: '',
@@ -52,30 +52,61 @@ export const applicationDataAtom = atom({
   },
 });
 
-export const temsState = selector({
-  key: 'temsState',
+export const wholeDataAtom = atom({
+  key: 'wholeDataAtom',
+  default: {
+    walletAddress: '',
+    name: '',
+    nationality: '',
+    gender: '',
+    email: '',
+    birth: '',
+    mobileNumber: '',
+    address1: '',
+    address2: '',
+    companyName: '',
+    companyIndustry: '',
+    businessCardImageUrl: '',
+    introduction: '',
+    favoriteMood: '',
+    privacyPolicyAgreement: '',
+    ageCheck: '',
+    termsOfUseAgreement: '',
+    optionalPrivacyPolicyAgreement: '',
+    profileImages: [{ imageUrl: '' }, { imageUrl: '' }],
+    snsAccounts: [{ type: 'NONE', snsUrl: '' }],
+    interests: [],
+    favoriteColors: [{ code: '' }],
+  },
+});
+
+export const termsState = selector({
+  key: 'termsState',
   get: ({ get }) => {
-    const { terms } = get(applicationDataAtom);
+    const data = get(wholeDataAtom);
 
     return {
       privacyPolicyAgreement:
-        terms?.privacyPolicyAgreement === 'Y' ? true : false,
+        data?.privacyPolicyAgreement === 'Y' ? true : false,
       optionalPrivacyPolicyAgreement:
-        terms?.optionalPrivacyPolicyAgreement === 'Y' ? true : false,
+        data?.optionalPrivacyPolicyAgreement === 'Y' ? true : false,
       policyHandlingAgreement:
-        terms?.policyHandlingAgreement === 'Y' ? true : false,
-      termsOfUseAgreement: terms?.termsOfUseAgreement === 'Y' ? true : false,
-      ageFourteenCheck: terms?.ageFourteenCheck === 'Y' ? true : false,
+        data?.policyHandlingAgreement === 'Y' ? true : false,
+      termsOfUseAgreement: data?.termsOfUseAgreement === 'Y' ? true : false,
+      ageCheck: data?.ageCheck === 'Y' ? true : false,
     };
   },
 
   set: ({ set }, newValue) => {
-    set(applicationDataAtom, (oldValue) => ({
+    set(wholeDataAtom, (oldValue) => ({
       ...oldValue,
-      terms: {
-        ...oldValue.terms,
-        ...newValue,
-      },
+      privacyPolicyAgreement: newValue.privacyPolicyAgreement ? 'Y' : 'N',
+      optionalPrivacyPolicyAgreement: newValue.optionalPrivacyPolicyAgreement
+        ? 'Y'
+        : 'N',
+      policyHandlingAgreement: newValue.policyHandlingAgreement ? 'Y' : 'N',
+      termsOfUseAgreement: newValue.termsOfUseAgreement ? 'Y' : 'N',
+      ageCheck: newValue.ageCheck ? 'Y' : 'N',
     }));
   },
 });
@@ -83,62 +114,98 @@ export const temsState = selector({
 export const personalState = selector({
   key: 'personalState',
   get: ({ get }) => {
-    const { personal } = get(applicationDataAtom);
+    const data = get(wholeDataAtom);
 
     return {
-      name: personal?.name,
-      nationality: personal?.nationality || '대한민국',
-      gender: personal?.gender,
-      birth: personal?.birth,
-      email: personal?.email,
-      mobileCountryCode: personal?.mobileCountryCode || '82',
-      mobileNumber: personal?.mobileNumber,
-      address1: personal?.address1,
-      address2: personal?.address2,
-      snsAccounts:
-        !personal?.snsAccounts || personal?.snsAccounts.length === 0
-          ? [{ type: 'NONE', snsUrl: '' }]
-          : personal?.snsAccounts.map((snsAccount) => ({
-              type: snsAccount.type,
-              snsUrl: snsAccount.snsUrl,
-            })),
+      name: data?.name,
+      nationality: data?.nationality || '대한민국',
+      gender: data?.gender,
+      birth: data?.birth,
+      email: data?.email,
+      mobileCountryCode: data?.mobileCountryCode || '82',
+      mobileNumber: data?.mobileNumber,
+      address1: data?.address1,
+      address2: data?.address2,
+      snsAccounts: [{ type: 'NONE', snsUrl: '' }],
       profileImages:
-        !personal?.profileImages || personal?.profileImages.length === 0
+        !data?.profileImages || data?.profileImages.length === 0
           ? [{ imageUrl: '' }, { imageUrl: '' }]
-          : personal?.profileImages.map((profileImage) => ({
+          : data?.profileImages.map((profileImage) => ({
               imageUrl: profileImage.imageUrl,
             })),
     };
   },
 
   set: ({ set }, newValue) => {
-    set(applicationDataAtom, (oldValue) => ({
+    set(wholeDataAtom, (oldValue) => ({
       ...oldValue,
-      personal: {
-        ...oldValue.personal,
-        name: newValue.name,
-        nationality: newValue.nationality || 'KR',
-        gender: newValue.gender,
-        birth: newValue.birth,
-        email: newValue.email,
-        mobileCountryCode: newValue.mobileCountryCode || '82',
-        mobileNumber: newValue.mobileNumber,
-        address1: newValue.address1,
-        address2: newValue.address2,
-        snsAccounts:
-          !newValue?.snsAccounts || newValue?.snsAccounts.length === 0
-            ? [{ type: 'NONE', snsUrl: '' }]
-            : newValue.snsAccounts.map((snsAccount) => ({
-                type: snsAccount.type,
-                snsUrl: snsAccount.snsUrl,
-              })),
-        profileImages:
-          !newValue?.profileImages || newValue?.profileImages.length === 0
-            ? [{ imageUrl: '' }, { imageUrl: '' }]
-            : newValue.profileImages.map((profileImage) => ({
-                imageUrl: profileImage.imageUrl,
-              })),
-      },
+      name: newValue.name,
+      gender: newValue.gender,
+      birth: newValue.birth,
+      email: newValue.email,
+      mobileCountryCode: newValue.mobileCountryCode,
+      mobileNumber: newValue.mobileNumber,
+      address1: newValue.address1,
+      address2: newValue.address2,
+      // snsAccounts: newValue.snsAccounts,
+      profileImages: newValue.profileImages,
+    }));
+  },
+});
+
+export const jobState = selector({
+  key: 'jobState',
+  get: ({ get }) => {
+    const data = get(wholeDataAtom);
+
+    return {
+      companyName: data?.companyName,
+      companyIndustryCategory: data?.companyIndustryCategory,
+      companyIndustrySubcategory: data?.companyIndustrySubcategory,
+      businessCardImageUrl: data?.businessCardImageUrl,
+    };
+  },
+
+  set: ({ set }, newValue) => {
+    set(wholeDataAtom, (oldValue) => ({
+      ...oldValue,
+      companyName: newValue.companyName,
+      companyIndustryCategory: newValue.companyIndustryCategory,
+      companyIndustrySubcategory: newValue.companyIndustrySubcategory,
+      businessCardImageUrl: newValue.businessCardImageUrl,
+    }));
+  },
+});
+
+export const detailState = selector({
+  key: 'detailState',
+  get: ({ get }) => {
+    const data = get(wholeDataAtom);
+
+    return {
+      introduction: data?.introduction,
+      favoriteMood: data?.favoriteMood,
+      interests:
+        data?.interests &&
+        data?.interests.map(({ content }) => {
+          return content;
+        }),
+      favoriteColors:
+        !data?.favoriteColors || data?.favoriteColors.length === 0
+          ? [{ code: '' }, { code: '' }, { code: '' }]
+          : data?.favoriteColors.map((favoriteColor) => ({
+              code: favoriteColor.code,
+            })),
+    };
+  },
+
+  set: ({ set }, newValue) => {
+    set(wholeDataAtom, (oldValue) => ({
+      ...oldValue,
+      introduction: newValue.introduction,
+      favoriteMood: newValue.favoriteMood,
+      interests: newValue.interests,
+      favoriteColors: newValue.favoriteColors,
     }));
   },
 });

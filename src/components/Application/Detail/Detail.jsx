@@ -3,28 +3,39 @@ import { InputText } from '../Input/InputText';
 import { Color } from './Color';
 import { Interest } from './Interest';
 import { useRecoilValue } from 'recoil';
-import { applicationDataAtom } from '../../../store/applicationState';
+import {
+  applicationViewAtom,
+  detailState,
+} from '../../../store/applicationState';
 import { submit } from '../../../api';
+import { useSetRecoilState } from 'recoil';
 
 export const Detail = () => {
-  const applicationData = useRecoilValue(applicationDataAtom);
+  const detailData = useRecoilValue(detailState);
+  const setApplicationView = useSetRecoilState(applicationViewAtom);
   const onSubmit = useCallback(
     async (e) => {
       e.preventDefault();
-      const { detail } = applicationData;
+
       const data = {
-        ...detail,
-        interests: detail.interests.map((interest) => ({
+        ...detailData,
+        interests: detailData.interests.map((interest) => ({
           content: interest,
         })),
       };
       console.log(data);
       const res = await submit(data, 'submit');
 
-      console.log(res);
+      if (res) {
+        setApplicationView('PREVIEW');
+      }
     },
-    [applicationData]
+    [detailData, setApplicationView]
   );
+
+  const onClickPrev = useCallback(() => {
+    setApplicationView('JOB');
+  }, [setApplicationView]);
 
   return (
     <form>
@@ -42,6 +53,7 @@ export const Detail = () => {
       />
       <Color />
       <Interest />
+      <button onClick={onClickPrev}>{'이전'}</button>
       <button type='submit' onClick={onSubmit}>
         {'다음'}
       </button>

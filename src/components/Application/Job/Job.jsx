@@ -3,23 +3,30 @@ import { InputText } from '../Input/InputText';
 import { Industry } from './Industry';
 import { InputFile } from '../Input/InputFile';
 import { useRecoilValue } from 'recoil';
-import { applicationDataAtom } from '../../../store/applicationState';
+import { applicationViewAtom, jobState } from '../../../store/applicationState';
 import { submit } from '../../../api';
+import { useSetRecoilState } from 'recoil';
 
 export const Job = () => {
-  const applicationData = useRecoilValue(applicationDataAtom);
+  const jobData = useRecoilValue(jobState);
+  const setApplicationView = useSetRecoilState(applicationViewAtom);
 
   const onSubmit = useCallback(
     async (e) => {
       e.preventDefault();
-      const { job } = applicationData;
 
-      const res = await submit(job, 'job');
+      const res = await submit(jobData, 'job');
 
-      console.log(res);
+      if (res) {
+        setApplicationView('DETAIL');
+      }
     },
-    [applicationData]
+    [jobData, setApplicationView]
   );
+
+  const onClickPrev = useCallback(() => {
+    setApplicationView('PERSONAL');
+  }, [setApplicationView]);
 
   return (
     <form>
@@ -30,7 +37,9 @@ export const Job = () => {
         page={'job'}
       />
       <Industry />
+
       <InputFile arrayLength={1} page={'job'} />
+      <button onClick={onClickPrev}>이전</button>
       <button type='submit' onClick={onSubmit}>
         다음
       </button>
