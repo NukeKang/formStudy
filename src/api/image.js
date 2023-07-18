@@ -1,11 +1,13 @@
 import { baseURL } from '../configs';
+import { myFetch } from './interceptor';
 const accessToken = JSON.parse(
   localStorage.getItem('test-token') || '{}'
 ).accessToken;
 
 export const imageUpload = async (formData, walletAddress, type) => {
   try {
-    const response = await fetch(`${baseURL}/image/${walletAddress}/${type}`, {
+    const response = await myFetch({
+      url: `${baseURL}/image/${walletAddress}/${type}`,
       method: 'POST',
       headers: {
         // !!fetch에서 formData를 사용할 때 Content-Type을 설정하지 않기
@@ -19,8 +21,8 @@ export const imageUpload = async (formData, walletAddress, type) => {
     //   console.log(1);
     // }
 
-    if (response.ok) {
-      const { data } = await response.json();
+    if (response.message === 'success') {
+      const { data } = response;
 
       return data;
     } else {
@@ -58,3 +60,35 @@ export const getImageUrl = async (filename) => {
     return false;
   }
 };
+
+// export const getImageUrl = async (filename) => {
+//   try {
+//     const response = await myFetch({
+//       url: `${baseURL}${filename}`,
+//       method: 'GET',
+//       headers: {
+//         Authorization: `Bearer ${accessToken}`,
+//       },
+//       responseType: 'blob',
+//     });
+//     console.log('image', response);
+//     if (response.message === 'success') {
+//       const { data } = response;
+//       console.log(data);
+
+//       const blob = await data.blob();
+
+//       const reader = new FileReader();
+//       reader.readAsDataURL(blob);
+
+//       return new Promise((resolve) => {
+//         reader.onloadend = () => resolve(reader.result);
+//       });
+//     } else {
+//       return null;
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     return false;
+//   }
+// };

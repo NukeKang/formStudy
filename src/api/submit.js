@@ -1,4 +1,5 @@
 import { baseURL } from '../configs';
+import { myFetch } from './interceptor';
 
 export const submit = async (data, step) => {
   const accessToken = JSON.parse(
@@ -6,7 +7,8 @@ export const submit = async (data, step) => {
   ).accessToken;
 
   try {
-    const response = await fetch(`${baseURL}/application/${step}`, {
+    const response = await myFetch({
+      url: `${baseURL}/application/${step}`,
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -15,12 +17,9 @@ export const submit = async (data, step) => {
       body: JSON.stringify({ ...data }),
     });
 
-    if (response.ok) {
-      const {
-        data: { application },
-      } = await response.json();
+    if (response.message === 'success') {
+      const { application } = response.data;
 
-      console.log(application);
       return application;
     } else {
       return null;

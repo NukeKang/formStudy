@@ -22,7 +22,11 @@ export const InputFile = ({ arrayLength, page }) => {
       const formData = new FormData();
       formData.append('image', files[0]);
 
-      const response = await imageUpload(formData, walletAddress, 'PROFILE');
+      const response = await imageUpload(
+        formData,
+        walletAddress,
+        page === 'personal' ? 'PROFILE' : 'BUSINESS_CARD'
+      );
 
       if (page === 'personal') {
         setPersonalData((prev) => {
@@ -45,7 +49,6 @@ export const InputFile = ({ arrayLength, page }) => {
           };
         });
       }
-
       if (response) {
         const blobData = await getImageUrl(response.imageUrl);
         setBlob((prev) => {

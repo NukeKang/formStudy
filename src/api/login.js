@@ -1,8 +1,10 @@
 import { baseURL } from '../configs';
+import { myFetch } from './interceptor';
 
 export const login = async (walletAddress, signature) => {
   try {
-    const response = await fetch(`${baseURL}/login`, {
+    const response = await myFetch({
+      url: `${baseURL}/login`,
       method: 'POST',
       headers: {
         Accept: 'application/json',
@@ -13,11 +15,9 @@ export const login = async (walletAddress, signature) => {
         signature: signature,
       }),
     });
-
-    if (response.ok) {
-      const {
-        data: { tokenSet },
-      } = await response.json();
+    console.log(response);
+    if (response.message === 'success') {
+      const { tokenSet } = response.data;
 
       localStorage.setItem('test-token', JSON.stringify(tokenSet));
 
@@ -30,26 +30,3 @@ export const login = async (walletAddress, signature) => {
     return false;
   }
 };
-
-// export const refreshAccessToken = async () => {
-//   const recoilPersist = JSON.parse(
-//     localStorage.getItem('recoil-persist') || '{}'
-//   );
-
-//   const token = JSON.parse(localStorage.getItem('wxyz-token') || '{}');
-
-//   try {
-//     const res: { accessToken: string } = await AxiosClient.post('/refresh', {
-//       walletAddress: recoilPersist.walletAddressAtom,
-//       refreshToken: token.refreshToken,
-//     });
-//     localStorage.setItem(
-//       'wxyz-token',
-//       JSON.stringify({ ...token, accessToken: res.accessToken })
-//     );
-//     return res.accessToken;
-//   } catch (error) {
-//     logout();
-//     return '';
-//   }
-// };

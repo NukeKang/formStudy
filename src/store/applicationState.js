@@ -188,7 +188,7 @@ export const detailState = selector({
       interests:
         data?.interests &&
         data?.interests.map(({ content }) => {
-          return content;
+          return { content: content };
         }),
       favoriteColors:
         !data?.favoriteColors || data?.favoriteColors.length === 0

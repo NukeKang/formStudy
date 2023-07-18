@@ -1,9 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useRecoilState } from 'recoil';
-import {
-  applicationDataAtom,
-  detailState,
-} from '../../../store/applicationState';
+import { detailState } from '../../../store/applicationState';
 
 const interests = [
   '예술',
@@ -20,28 +17,21 @@ const interests = [
 
 export const Interest = () => {
   const [detailData, setDetailData] = useRecoilState(detailState);
-  const [inputListToArray, setInputListToArray] = useState([]);
-
-  // const inputListToArray = Array.from(inputList)?.filter((input) => {
-  //   return input.checked;
-  // });
-
-  // console.log(inputListToArray);
 
   const handleSelectChange = useCallback(
-    (e) => {
-      const { checked } = e.target;
+    (e, idx) => {
+      const { checked, value } = e.target;
 
       if (checked) {
         setDetailData((prev) => ({
           ...prev,
-          interests: [...prev.interests, checked],
+          interests: [...prev.interests, { content: value }],
         }));
       } else {
         setDetailData((prev) => ({
           ...prev,
           interests: prev.interests.filter(
-            (interest) => interest !== e.target.value
+            (interest) => interest.content !== value
           ),
         }));
       }
@@ -49,14 +39,9 @@ export const Interest = () => {
     [setDetailData]
   );
 
-  useEffect(() => {
-    const inputList = document.querySelectorAll('#interest input');
-    const inputListToArray = Array.from(inputList)?.filter((input) => {
-      return input.checked;
-    });
+  console.log(detailData);
 
-    setInputListToArray(inputListToArray);
-  }, [detailData.interests]);
+  useEffect(() => {}, []);
 
   return (
     <div>
@@ -67,9 +52,11 @@ export const Interest = () => {
             <input
               type='checkbox'
               id={interest}
-              onChange={handleSelectChange}
+              onChange={(e) => handleSelectChange(e, idx)}
               value={interest}
-              checked={detailData.interests.includes(interest)}
+              checked={detailData.interests.some(
+                (item) => item.content === interest
+              )}
             />
             {interest}
           </label>

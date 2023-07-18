@@ -1,4 +1,5 @@
 import { baseURL } from '../configs';
+import { myFetch } from './interceptor';
 
 export const getApplicationData = async () => {
   const accessToken = JSON.parse(
@@ -6,7 +7,8 @@ export const getApplicationData = async () => {
   ).accessToken;
 
   try {
-    const response = await fetch(`${baseURL}/application`, {
+    const response = await myFetch({
+      url: `${baseURL}/application`,
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -14,8 +16,8 @@ export const getApplicationData = async () => {
       },
     });
 
-    if (response.ok) {
-      const { data } = await response.json();
+    if (response.message === 'success') {
+      const { data } = response;
 
       return data;
     } else {

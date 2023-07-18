@@ -17,14 +17,7 @@ export const Detail = () => {
     async (e) => {
       e.preventDefault();
 
-      const data = {
-        ...detailData,
-        interests: detailData.interests.map((interest) => ({
-          content: interest,
-        })),
-      };
-      console.log(data);
-      const res = await submit(data, 'submit');
+      const res = await submit(detailData, 'submit');
 
       if (res) {
         setApplicationView('PREVIEW');

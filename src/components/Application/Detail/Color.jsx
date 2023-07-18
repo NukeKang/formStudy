@@ -10,7 +10,7 @@ const COLOR = [
 
 export const Color = () => {
   const [detailData, setDetailData] = useRecoilState(detailState);
-  console.log(detailData);
+
   const handleTextChange = useCallback(
     (e, index) => {
       const { value } = e.target;
