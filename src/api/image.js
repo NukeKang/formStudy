@@ -34,17 +34,46 @@ export const imageUpload = async (formData, walletAddress, type) => {
   }
 };
 
+// export const getImageUrl = async (filename) => {
+//   try {
+//     const response = await fetch(`${baseURL}${filename}`, {
+//       method: 'GET',
+//       headers: {
+//         Authorization: `Bearer ${accessToken}`,
+//       },
+//     });
+
+//     if (response.ok) {
+//       const data = await response.blob();
+
+//       const reader = new FileReader();
+//       reader.readAsDataURL(data);
+
+//       return new Promise((resolve) => {
+//         reader.onloadend = () => resolve(reader.result);
+//       });
+//     } else {
+//       return null;
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     return false;
+//   }
+// };
+
 export const getImageUrl = async (filename) => {
   try {
-    const response = await fetch(`${baseURL}${filename}`, {
+    const response = await myFetch({
+      url: `${baseURL}${filename}`,
       method: 'GET',
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
+      responseType: 'blob',
     });
 
-    if (response.ok) {
-      const data = await response.blob();
+    if (response.message === 'success') {
+      const { data } = response;
 
       const reader = new FileReader();
       reader.readAsDataURL(data);
@@ -60,35 +89,3 @@ export const getImageUrl = async (filename) => {
     return false;
   }
 };
-
-// export const getImageUrl = async (filename) => {
-//   try {
-//     const response = await myFetch({
-//       url: `${baseURL}${filename}`,
-//       method: 'GET',
-//       headers: {
-//         Authorization: `Bearer ${accessToken}`,
-//       },
-//       responseType: 'blob',
-//     });
-//     console.log('image', response);
-//     if (response.message === 'success') {
-//       const { data } = response;
-//       console.log(data);
-
-//       const blob = await data.blob();
-
-//       const reader = new FileReader();
-//       reader.readAsDataURL(blob);
-
-//       return new Promise((resolve) => {
-//         reader.onloadend = () => resolve(reader.result);
-//       });
-//     } else {
-//       return null;
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     return false;
-//   }
-// };

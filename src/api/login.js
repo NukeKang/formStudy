@@ -15,7 +15,7 @@ export const login = async (walletAddress, signature) => {
         signature: signature,
       }),
     });
-    console.log(response);
+
     if (response.message === 'success') {
       const { tokenSet } = response.data;
 

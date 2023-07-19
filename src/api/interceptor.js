@@ -39,18 +39,24 @@ function fetchRequestInterceptor(config) {
     options.method = 'GET';
   }
 
-  if (options.responseType === 'blob') {
-    options.headers = {
-      ...options.headers,
-      Accept: 'application/json',
-    };
-  }
+  // if (options.responseType === 'blob') {
+  //   options.headers = {
+  //     ...options.headers,
+  //     // Accept: '*/*',
+  //   };
+  // }
 
   return [url, options];
 }
 
 async function fetchResponseInterceptor(response) {
   try {
+    if (response.headers.get('Content-Type') === 'image/png') {
+      const data = await response.blob();
+
+      return { message: 'success', data, reason: null };
+    }
+
     if (response.ok) {
       const { data } = await response.json();
       console.log(response);
@@ -98,7 +104,6 @@ async function fetchResponseInterceptor(response) {
 async function myFetch(config) {
   try {
     const [url, options] = fetchRequestInterceptor(config);
-    console.log(url, options);
     const response = await fetch(url, options);
 
     const data = await fetchResponseInterceptor(response);
